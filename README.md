@@ -25,7 +25,7 @@ JSON for persistent storage.
 ### Development Tools
 IDE: Visual Studio Code for development and debugging.
 Assets: Free resources for icons and color palettes.
-<br/>
+
 ## App Architecture
 ### Front-End
 Built with PySide6 for creating a responsive and user-friendly interface.
@@ -40,7 +40,7 @@ Task Overview Screen: Displays all tasks with sorting and filtering options.
 Task Editor Screen: Allows users to add or edit task details.
 Settings/Help Screen: Offers app customization and usage instructions.
 
-<br/>
+
 ## Project Roadmap
 ### Minimum Viable Product (MVP)
 To be completed by the second lab period:
@@ -53,7 +53,7 @@ To be completed by the second lab period:
 * Recurring tasks implementation.
 * Enhanced search capabilities.
 * Integration with calendar APIs for syncing deadlines.
-<br/>
+  
 ## Installation Instructions
 1. **Clone the Repository:**
 'git clone https://github.com/<your-username>/task-manager-app.git'
