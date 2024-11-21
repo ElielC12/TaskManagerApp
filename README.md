@@ -62,7 +62,7 @@ cd task-manager-app'
 'pip install PySide6'
 3. **Run the Application:** Execute the main Python file to launch the app:
 'python main.py'
-<br/>
+
 ## Contribution Guidelines
 We welcome contributions to enhance the app!
 Please follow these steps:
