@@ -4,16 +4,16 @@ The Task Manager App is a productivity application designed to help students org
 
 ## Features
 ### Core Features
-Add, Edit, and Delete Tasks: Easily manage tasks with fields like name, category, priority, and due date/time.
-Color-Coded Priorities: Highlight tasks based on urgency (e.g., High: Red, Medium: Yellow, Low: Green).
-Task Categorization: Group tasks under categories such as "Assignments," "Exams," and "Homework."
-Sorting and Filtering: Sort tasks by due date, priority, or category; filter tasks based on selected criteria.
-Persistent Data Storage: Automatically save tasks to a JSON file, ensuring data is retained between sessions.
-Intuitive UI: A simple, visually intuitive interface for seamless navigation and task management.
+**Add, Edit, and Delete Tasks:** Easily manage tasks with fields like name, category, priority, and due date/time.
+**Color-Coded Priorities:** Highlight tasks based on urgency (e.g., High: Red, Medium: Yellow, Low: Green).
+**Task Categorization:** Group tasks under categories such as "Assignments," "Exams," and "Homework."
+**Sorting and Filtering:** Sort tasks by due date, priority, or category; filter tasks based on selected criteria.
+**Persistent Data Storage:** Automatically save tasks to a JSON file, ensuring data is retained between sessions.
+**Intuitive UI:** A simple, visually intuitive interface for seamless navigation and task management.
 ## Stretch Goals
-Recurring Tasks: Support for tasks that repeat daily, weekly, or at custom intervals.
-Search Feature: Quickly locate tasks using keywords or categories.
-Calendar Integration: Sync tasks and deadlines with calendar services (e.g., Google Calendar).
+**Recurring Tasks:** Support for tasks that repeat daily, weekly, or at custom intervals.
+**Search Feature:** Quickly locate tasks using keywords or categories.
+**Calendar Integration:** Sync tasks and deadlines with calendar services (e.g., Google Calendar).
 <br/>
 ## Tools & Technologies
 ### Languages & Frameworks
@@ -30,15 +30,15 @@ Assets: Free resources for icons and color palettes.
 ### Front-End
 Built with PySide6 for creating a responsive and user-friendly interface.
 ### Back-End
-Task Class: Represents individual tasks with attributes like name, category, priority, and due date.
-TaskManager Class: Manages tasks using methods like add_task, remove_task, and update_task.
+**Task Class:** Represents individual tasks with attributes like name, category, priority, and due date.
+**TaskManager Class:** Manages tasks using methods like add_task, remove_task, and update_task.
 ### Persistent Storage
 Uses a JSON file for storing and retrieving tasks, ensuring data persistence across sessions.
 ## User Interface
 ### Main Screens
-Task Overview Screen: Displays all tasks with sorting and filtering options.
-Task Editor Screen: Allows users to add or edit task details.
-Settings/Help Screen: Offers app customization and usage instructions.
+**Task Overview Screen:** Displays all tasks with sorting and filtering options.
+**Task Editor Screen:** Allows users to add or edit task details.
+**Settings/Help Screen:** Offers app customization and usage instructions.
 
 
 ## Project Roadmap
