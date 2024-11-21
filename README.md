@@ -57,7 +57,7 @@ To be completed by the second lab period:
 ## Installation Instructions
 1. **Clone the Repository:**
 ```git clone https://github.com/<your-username>/task-manager-app.git```
-cd task-manager-app'
+```cd task-manager-app```
 2. **Set Up the Environment:** Ensure Python is installed on your system. Install PySide6:
 ```pip install PySide6```
 3. **Run the Application:** Execute the main Python file to launch the app:
