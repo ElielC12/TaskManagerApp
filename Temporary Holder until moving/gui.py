@@ -5,7 +5,7 @@
 
 import datetime
 from PySide6.QtGui import QKeyEvent, QColor, QFont
-from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy, QInputDialog
 from PySide6.QtCore import Qt, QDate
 import os, json
 import backend
@@ -89,6 +89,7 @@ class MyWindow(QMainWindow):
         # if os.path.exists(f'{os.path.abspath(__file__)[:-6]}storage.txt'):
         self.refreshItems()
 
+        self.list.itemDoubleClicked.connect(self.editItem)
         self.list.currentItemChanged.connect(self.printThis)
         self.list.setStyleSheet("""
             QListWidget::item {
@@ -213,8 +214,48 @@ class MyWindow(QMainWindow):
 
         query = QMessageBox.question(self, "Wait!!!", 'Are you sure you want to delete the selected items?')
         if query == QMessageBox.Yes:
+            # for item in self.list.selectedItems():
+            #     self.list.takeItem(self.list.row(item))
             for item in self.list.selectedItems():
-                self.list.takeItem(self.list.row(item))
+                backend.removeFromJSON(item.id)
+            self.clearList()
+            self.refreshItems()
+
+
+    def editItem(self, item):
+        # print(item.id)
+
+        input = QDialog()
+        inputLayout = QVBoxLayout()
+
+        top = QLabel('Edit Selected Item')
+        top.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        inputLayout.addWidget(top)
+
+        rename = QLineEdit()
+        inputLayout.addWidget(rename)
+        reDate = QDateEdit()
+        inputLayout.addWidget(reDate)
+        reCat = QComboBox() # Category Input
+        with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+            storage = json.load(storage)
+            cats = storage['cats']
+            for cat in cats:
+                reCat.addItem(cat, cats.index(cat))
+        input.setLayout(inputLayout)
+        inputLayout.addWidget(reCat)
+        
+        aOD = (QDialogButtonBox.Save | QDialogButtonBox.Cancel)
+        saveDiscardBox = QDialogButtonBox(aOD)
+        saveDiscardBox.accepted.connect()
+        saveDiscardBox.rejected.connect(lambda: input.close())
+        inputLayout.addWidget(saveDiscardBox)
+
+        if input.exec():
+            print('REMOVE')
+        else:
+            print('none')
+        # for self.list.selectedItems():
 
     def clearList(self):
         """Clears the Gui's List of List items. DOES NOT remove the items from JSON
@@ -231,6 +272,7 @@ class MyWindow(QMainWindow):
             for item in items:
                 # self.list.addItem(item["name"] + "-------" + item["date"])
                 newitem = ListItemWithId(item["id"], f"{item["category"]:<12}" + f"{item["name"]:<15}" + f'{item["date"]:<8}' )
+                backend.sortByDate()
                 
                 # Start Color
                 today = datetime.datetime.now()
