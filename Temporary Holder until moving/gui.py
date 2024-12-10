@@ -44,6 +44,7 @@ class MyWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Shopping List")
 
+        self.CatSort = False
         self.curName = ''
         self.selectedRows = []
         
@@ -244,12 +245,22 @@ class MyWindow(QMainWindow):
                 reCat.addItem(cat, cats.index(cat))
         input.setLayout(inputLayout)
         inputLayout.addWidget(reCat)
+
+
+        def accept():
+            backend.editJSONItem(item.id, rename.text(), reDate.text(), reCat.currentText())
+            self.clearList()
+            self.refreshItems()
+            input.close()
+        def reject():
+            input.close()
         
         aOD = (QDialogButtonBox.Save | QDialogButtonBox.Cancel)
         saveDiscardBox = QDialogButtonBox(aOD)
-        saveDiscardBox.accepted.connect()
-        saveDiscardBox.rejected.connect(lambda: input.close())
+        saveDiscardBox.accepted.connect(accept)
+        saveDiscardBox.rejected.connect(reject)
         inputLayout.addWidget(saveDiscardBox)
+
 
         if input.exec():
             print('REMOVE')
@@ -306,7 +317,25 @@ class MyWindow(QMainWindow):
             for count in range(self.list.count()):
                 storage.write(self.list.item(count).text() + '\n')
                 os.path.abspath(__file__)
+    
+    def toggleSort(self):
+        if self.CatSort:
+            pass #Sort by date and category
+        else:
+            pass #Sort by date
+        print('Toggle')
 
+    def addCat(self):
+        """
+        Adds Category to JSON list and clears category name input
+        """
+        print('Added')
+    
+    def removeCurCat(self):
+        """
+        Remove cur Category from JSON and replace the Cat of every item with that category with None
+        """
+        print('Removed')
 if __name__ == '__main__':
     app = QApplication()
     w = MyWindow()

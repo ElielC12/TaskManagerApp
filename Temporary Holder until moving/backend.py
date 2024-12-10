@@ -17,6 +17,8 @@ def createID():
         ids.sort()  # Sort the list of IDs
     
     # Return the highest ID + 1 to create a new unique ID
+    if len(storage["items"]) == 0:
+        return 0
     return ids[-1] + 1
 
 
