@@ -153,6 +153,12 @@ def removeCategory(cat: str):
         # Read the JSON data
         storage = read_json_file("storage.json")
         items = storage.get("items", [])
+        cats: list = storage.get("cats", [])
+
+        # Remove Category from JSON file
+        for cate in cats:
+            if cate == cat:
+                cats.remove(cat)
 
         # Update the category to 'None' for all matching items
         updated = False
@@ -160,10 +166,10 @@ def removeCategory(cat: str):
             if "category" in item and item["category"] == cat:
                 item["category"] = 'None'
                 updated = True
+        write_json_file("storage.json", storage)
 
         if updated:
             # Write the updated data back to the JSON file
-            write_json_file("storage.json", storage)
             print(f"All items with category '{cat}' have been updated to 'None'.")
         else:
             print(f"No items found with category '{cat}'.")
@@ -173,7 +179,11 @@ def removeCategory(cat: str):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-
+def addCategory(cat: str):
+    storage = read_json_file("storage.json")
+    cats: list = storage["cats"]
+    cats.append(cat)
+    write_json_file("storage.json", storage)
 
 if __name__ == "__main__":
     # removeCategory("Calculus")

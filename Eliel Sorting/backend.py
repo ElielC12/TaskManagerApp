@@ -153,6 +153,12 @@ def removeCategory(cat: str):
         # Read the JSON data
         storage = read_json_file("storage.json")
         items = storage.get("items", [])
+        cats: list = storage.get("cats", [])
+
+        # Remove Category from JSON file
+        for cate in cats:
+            if cate == cat:
+                cats.remove(cat)
 
         # Update the category to 'None' for all matching items
         updated = False
@@ -176,4 +182,4 @@ def removeCategory(cat: str):
 
 
 if __name__ == "__main__":
-    removeCategory("Calculus")
+    removeCategory("Math")

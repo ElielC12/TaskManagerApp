@@ -4,7 +4,7 @@
 # Finsihed 11/13 Finshied Functionality
 
 import datetime
-from PySide6.QtGui import QKeyEvent, QColor, QFont
+from PySide6.QtGui import QKeyEvent, QColor, QFont, QIcon
 from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy, QInputDialog
 from PySide6.QtCore import Qt, QDate
 import os, json
@@ -42,7 +42,9 @@ class MyWindow(QMainWindow):
     def __init__(self):
             
         super().__init__()
-        self.setWindowTitle("Shopping List")
+        self.setWindowTitle("Trackit")
+        self.setWindowIcon(QIcon('pencil-icon.png'))
+        self.resize(800, 500)
 
         self.CatSort = False
         self.curName = ''
@@ -53,12 +55,15 @@ class MyWindow(QMainWindow):
         #Add Top add section 
         self.AddEntries = QGridLayout() # Name Input
         self.AddName = QLineEdit()
+        self.AddName.setMaxLength(14)
+        self.AddName.setMinimumWidth(100)
         self.AddName.setPlaceholderText('Name')
         self.AddName.textChanged.connect(self.setAddName)
         self.AddDate = QDateEdit() # Date Input 
         self.AddDate.dateChanged.connect(self.setAddDate)
         self.curDate = self.AddDate.text()
         self.AddCat = QComboBox() # Category Input
+        self.AddCat.setMinimumWidth(160)
         with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
             storage = json.load(storage)
             cats = storage['cats']
@@ -126,16 +131,18 @@ class MyWindow(QMainWindow):
 
         self.CatToggle = QPushButton()
         self.CatToggle.clicked.connect(self.toggleSort)
-        self.CatToggle.setText('Category Sort On')
+        self.CatToggle.setText('Category Sort Off')
 
         sidebarLayout.addWidget(self.CatToggle)
         sidebarLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
         
         self.newCatName = QLineEdit()
+        self.newCatName.setMaxLength(11)
         self.newCatName.setPlaceholderText("New Category Name")
         sidebarLayout.addWidget(self.newCatName)
 
         self.addNewCat = QPushButton()
+        self.addNewCat.clicked.connect(self.addNwCat)
         self.addNewCat.setText('Add New Category')
         sidebarLayout.addWidget(self.addNewCat)
 
@@ -182,7 +189,7 @@ class MyWindow(QMainWindow):
     }
                            
     QWidget#Sidebar {
-        margin-left: 20px;
+        margin-left: 10px;
     }
 """)
 
@@ -232,6 +239,8 @@ class MyWindow(QMainWindow):
         # print(item.id)
 
         input = QDialog()
+        input.setWindowTitle('Edit Assignent')
+        input.setWindowIcon(QIcon('pencil-icon.png'))
         inputLayout = QVBoxLayout()
 
         top = QLabel('Edit Selected Item')
@@ -239,6 +248,7 @@ class MyWindow(QMainWindow):
         inputLayout.addWidget(top)
 
         rename = QLineEdit()
+        rename.setMaxLength(14)
         inputLayout.addWidget(rename)
         reDate = QDateEdit()
         inputLayout.addWidget(reDate)
@@ -308,11 +318,11 @@ class MyWindow(QMainWindow):
                 curAssignmentDate = datetime.datetime.strptime(item["date"], "%m/%d/%Y")
                 print(today - curAssignmentDate)
                 if curAssignmentDate - today < datetime.timedelta(days=2):
-                    newitem.setBackground(QColor(255, 0 ,0))
+                    newitem.setBackground(QColor(242, 71, 38))
                 elif curAssignmentDate - today < datetime.timedelta(days=7):
-                    newitem.setBackground(QColor(255,140,0))
+                    newitem.setBackground(QColor(250, 199, 16))
                 elif curAssignmentDate - today > datetime.timedelta(days=7):
-                    newitem.setBackground(QColor(0, 255 ,0))
+                    newitem.setBackground(QColor(11, 167, 137))
                 else:
                     newitem.setBackground(QColor(0, 0 ,255))
                 font = QFont()
@@ -339,28 +349,41 @@ class MyWindow(QMainWindow):
     def toggleSort(self):
         if self.CatSort:
             self.CatSort = False
+            self.CatToggle.setText('Category Sort Off')
         else:
             self.CatSort = True
+            self.CatToggle.setText('Category Sort On')
         self.sort()
         self.clearList()
         self.refreshItems()
         # print('Toggle')
 
-    def addCat(self):
+    def addNwCat(self):
         """
         Adds Category to JSON list and clears category name input
         """
-        print('Added')
+        backend.addCategory(self.newCatName.text())
+        self.newCatName.setText('')
+        with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+                storage = json.load(storage)
+                cats = storage['cats']
+                for item in range(len(cats) + 1):
+                    self.AddCat.removeItem(0)
+                for cat in cats:
+                    self.AddCat.addItem(cat, cats.index(cat))
+        self.sort()
+        self.clearList()
+        self.refreshItems()
     
     def removeCurCat(self):
         """
         Remove cur Category from JSON and replace the Cat of every item with that category with None
         """
         if self.AddCat.currentText() != 'None':
+            backend.removeCategory(self.AddCat.currentText())
             with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
                 storage = json.load(storage)
                 cats = storage['cats']
-                backend.removeCategory(self.AddCat.currentText())
                 for item in range(len(cats) + 1):
                     self.AddCat.removeItem(0)
                 for cat in cats:

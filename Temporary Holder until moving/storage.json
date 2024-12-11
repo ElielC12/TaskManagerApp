@@ -1,137 +1,27 @@
 {
     "items": [
         {
-            "name": "Really late",
-            "date": "1/1/2000",
-            "category": "CPTR-215",
-            "id": 13
-        },
-        {
-            "name": "this",
-            "date": "1/1/2000",
-            "category": "CPTR-215",
-            "id": 20
-        },
-        {
-            "name": "wef",
-            "date": "1/1/2000",
-            "category": "CPTR-215",
-            "id": 19
-        },
-        {
-            "name": "wef",
-            "date": "1/1/2000",
-            "category": "Chemestry",
-            "id": 15
-        },
-        {
-            "name": "wef",
-            "date": "1/1/2000",
-            "category": "Chemestry",
-            "id": 17
-        },
-        {
-            "name": "wef",
-            "date": "1/1/2000",
-            "category": "Chemestry",
-            "id": 16
-        },
-        {
-            "name": "this",
-            "date": "1/1/2000",
-            "category": "Math",
-            "id": 21
-        },
-        {
-            "name": "idk",
-            "date": "1/1/2000",
-            "category": "Math",
-            "id": 12
-        },
-        {
-            "name": "ynmtyjt",
-            "date": "1/1/2000",
-            "category": "Math",
-            "id": 9
-        },
-        {
-            "name": "wef",
-            "date": "1/1/2000",
-            "category": "None",
-            "id": 18
-        },
-        {
-            "name": "this",
-            "date": "1/1/2000",
-            "category": "None",
-            "id": 22
-        },
-        {
-            "name": "Newset",
-            "date": "1/1/2000",
-            "category": "None",
-            "id": 24
-        },
-        {
-            "name": "hbu",
-            "date": "1/1/2000",
-            "category": "None",
-            "id": 25
-        },
-        {
-            "name": "wow",
-            "date": "1/1/2000",
-            "category": "Science",
-            "id": 23
-        },
-        {
-            "name": "riowurgf",
-            "date": "1/1/2000",
-            "category": "Science",
-            "id": 5
-        },
-        {
-            "name": "test",
-            "date": "12/10/2024",
-            "category": "Math",
-            "id": 0
-        },
-        {
-            "name": "soon",
+            "name": "new",
             "date": "12/13/2024",
-            "category": "CPTR-215",
-            "id": 14
+            "category": "None",
+            "id": 2
         },
         {
-            "name": "qwd",
-            "date": "12/19/2024",
-            "category": "CPTR-215",
-            "id": 4
-        },
-        {
-            "name": "wef",
-            "date": "12/19/2024",
-            "category": "CPTR-215",
-            "id": 6
-        },
-        {
-            "name": "ew",
-            "date": "12/19/2024",
-            "category": "CPTR-215",
-            "id": 7
-        },
-        {
-            "name": "Project",
-            "date": "12/19/2024",
-            "category": "CPTR-215",
+            "name": "egr",
+            "date": "12/14/2024",
+            "category": "This Cat",
             "id": 3
+        },
+        {
+            "name": "wby",
+            "date": "12/19/2024",
+            "category": "None",
+            "id": 4
         }
     ],
     "cats": [
         "None",
         "Math",
-        "Science",
-        "CPTR-215",
-        "Chemestry"
+        "This Cat"
     ]
 }
