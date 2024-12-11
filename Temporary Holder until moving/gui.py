@@ -88,6 +88,7 @@ class MyWindow(QMainWindow):
         self.list = QListWidget()
         self.list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         # if os.path.exists(f'{os.path.abspath(__file__)[:-6]}storage.txt'):
+        self.sort()
         self.refreshItems()
 
         self.list.itemDoubleClicked.connect(self.editItem)
@@ -124,6 +125,7 @@ class MyWindow(QMainWindow):
         mainLayout.addWidget(Sidebar)
 
         self.CatToggle = QPushButton()
+        self.CatToggle.clicked.connect(self.toggleSort)
         self.CatToggle.setText('Category Sort On')
 
         sidebarLayout.addWidget(self.CatToggle)
@@ -138,6 +140,7 @@ class MyWindow(QMainWindow):
         sidebarLayout.addWidget(self.addNewCat)
 
         self.removeCat = QPushButton()
+        self.removeCat.clicked.connect(self.removeCurCat)
         self.removeCat.setText('Remove Current Category')
         sidebarLayout.addWidget(self.removeCat)
 
@@ -192,6 +195,7 @@ class MyWindow(QMainWindow):
             backend.addToJSON(backend.createID(), self.AddName.text(), self.AddDate.text(), self.AddCat.currentText())
             self.AddName.setText('')
             self.AddDate.setDate(QDate())
+            self.sort()
             self.clearList()
             self.refreshItems()
 
@@ -219,6 +223,7 @@ class MyWindow(QMainWindow):
             #     self.list.takeItem(self.list.row(item))
             for item in self.list.selectedItems():
                 backend.removeFromJSON(item.id)
+            self.sort()
             self.clearList()
             self.refreshItems()
 
@@ -238,6 +243,18 @@ class MyWindow(QMainWindow):
         reDate = QDateEdit()
         inputLayout.addWidget(reDate)
         reCat = QComboBox() # Category Input
+
+        itemData = backend.getInfo(item.id)[0]
+        name = itemData['name']
+        date = itemData['date'].split('/')
+        y = int(date[2])
+        m = int(date[0])
+        d = int(date[1])
+        cat = itemData['category']
+        rename.setText(name)
+        reDate.setDate(QDate(y, m, d))
+        reCat.setCurrentText(cat)
+
         with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
             storage = json.load(storage)
             cats = storage['cats']
@@ -249,6 +266,7 @@ class MyWindow(QMainWindow):
 
         def accept():
             backend.editJSONItem(item.id, rename.text(), reDate.text(), reCat.currentText())
+            self.sort()
             self.clearList()
             self.refreshItems()
             input.close()
@@ -320,10 +338,13 @@ class MyWindow(QMainWindow):
     
     def toggleSort(self):
         if self.CatSort:
-            pass #Sort by date and category
+            self.CatSort = False
         else:
-            pass #Sort by date
-        print('Toggle')
+            self.CatSort = True
+        self.sort()
+        self.clearList()
+        self.refreshItems()
+        # print('Toggle')
 
     def addCat(self):
         """
@@ -335,7 +356,27 @@ class MyWindow(QMainWindow):
         """
         Remove cur Category from JSON and replace the Cat of every item with that category with None
         """
-        print('Removed')
+        if self.AddCat.currentText() != 'None':
+            with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+                storage = json.load(storage)
+                cats = storage['cats']
+                backend.removeCategory(self.AddCat.currentText())
+                for item in range(len(cats) + 1):
+                    self.AddCat.removeItem(0)
+                for cat in cats:
+                    self.AddCat.addItem(cat, cats.index(cat))
+            self.curCat = self.AddCat.currentText()
+            self.sort()
+            self.clearList()
+            self.refreshItems()
+            # print('Removed')
+
+    def sort(self):
+        if self.CatSort:
+            backend.sortByCategoryAndDate()
+        else:
+            backend.sortByDate()
+
 if __name__ == '__main__':
     app = QApplication()
     w = MyWindow()

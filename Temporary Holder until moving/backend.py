@@ -2,112 +2,77 @@ import json
 from datetime import datetime
 import os
 
+# Get the directory of the script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Utility function to read and write JSON data to the file
+def read_json_file(filename):
+    filepath = os.path.join(SCRIPT_DIR, filename)
+    with open(filepath, 'r') as file:
+        return json.load(file)
+
+
+def write_json_file(filename, data):
+    filepath = os.path.join(SCRIPT_DIR, filename)
+    with open(filepath, 'w') as file:
+        json.dump(data, file, indent=4)
+
 
 def createID():
-    """
-    Generates a new unique ID for a new item by finding the highest current ID 
-    and adding 1 to it.
-    """
-    with open('storage.json', 'r+') as storage:
-        storage = json.load(storage)  # Load the current JSON data from 'storage.json'
-    
-    ids = []  # List to store all the current IDs
-    for item in storage["items"]:
-        ids.append(item['id'])  # Collect all item IDs into the list
-        ids.sort()  # Sort the list of IDs
-    
-    # Return the highest ID + 1 to create a new unique ID
-    if len(storage["items"]) == 0:
-        return 0
-    return ids[-1] + 1
+    storage = read_json_file('storage.json')
+    ids = [item['id'] for item in storage["items"]]
+    ids.sort()
+    return ids[-1] + 1 if ids else 1  # Return 1 if the list is empty
 
 
 def addToJSON(id: int, name: str, date: str, category: str = ''):
-    """
-    Adds a new item to the JSON file 'storage.json' with a given ID, name, date, and category.
-    """
-    with open('storage.json', 'r+') as file:
-        storage = json.load(file)  # Load existing data from the file
-
-    items = storage["items"]  # Access the list of items in the JSON structure
+    storage = read_json_file('storage.json')
+    items = storage["items"]
     items.append({
         "name": name,
         "date": date,
         "category": category,
         "id": id
-    })  # Append a new item to the list with provided details
-
-    # Write the updated data back to 'storage.json'
-    with open('storage.json', 'w') as newfile:
-        json.dump(storage, newfile, indent=4)  # Write the JSON data with formatting
+    })
+    write_json_file('storage.json', storage)
 
 
 def removeFromJSON(id: int):
-    """
-    Removes an item with a specific ID from the 'storage.json' file.
-    """
-    with open('storage.json', 'r+') as file:
-        storage = json.load(file)  # Load the current JSON data from the file
-
-    items = storage["items"]  # Access the list of items in the JSON structure
-    for index, obj in enumerate(items):
-        if obj["id"] == id:  # Check if the item ID matches the one to remove
-            items.pop(index)  # Remove the item from the list
-    
-    # Write the updated data back to 'storage.json'
-    with open('storage.json', 'w') as newfile:
-        json.dump(storage, newfile, indent=4)  # Write the JSON data with formatting
+    storage = read_json_file('storage.json')
+    items = storage["items"]
+    storage["items"] = [item for item in items if item["id"] != id]
+    write_json_file('storage.json', storage)
 
 
 def editJSONItem(id: int, name: str, date: str, category: str = ''):
-    """
-    Edits an existing item in 'storage.json' by removing it and adding it with updated details.
-    """
-    removeFromJSON(id)  # First, remove the old item with the given ID
-    addToJSON(id, name, date, category)  # Then, add the updated item
+    removeFromJSON(id)  # Remove the item first
+    addToJSON(id, name, date, category)  # Add the new item
 
 
 def resetJSON():
-    """
-    Resets the entire 'storage.json' file by clearing the list of items.
-    """
-    # Create an empty structure with just an "items" key holding an empty list
+    # Create an empty "items" list.
     empty_data = {
         "items": []
     }
-    
-    # Open the file in write mode, which will overwrite it with the empty data
-    with open('storage.json', 'w') as file:
-        json.dump(empty_data, file, indent=4)  # Write the empty data to the file
-    
+    write_json_file('storage.json', empty_data)
     print("JSON file has been reset to an empty state.")
 
 
 def sortByDate(): 
-    """
-    Sorts the items in 'storage.json' by the 'date' field, from earliest to latest.
-    """
     try:
         # Check if the file exists
-        if not os.path.exists("storage.json"):
+        if not os.path.exists(os.path.join(SCRIPT_DIR, "storage.json")):
             print("Error: 'storage.json' file does not exist. Make sure it's in the same directory.")
             return
-        
-        # Load the data from 'storage.json' file
-        with open("storage.json", "r") as file:
-            data = file.read()
-            print(f"Raw file content: {data}")  # Debugging line to print the raw file content
-            data = json.loads(data)  # Parse the data from JSON into a Python dictionary
-        
-        # Check if 'items' key exists and is a list
+
+        data = read_json_file("storage.json")
         if "items" in data and isinstance(data["items"], list):
-            # Sort items by the 'date' field (format: month/day/year)
+            # Sort items by date
             data["items"].sort(key=lambda x: datetime.strptime(x["date"], "%m/%d/%Y"))
-            
-            # Print the sorted items by date
-            print("Sorted items by date:")
-            for item in data["items"]:
-                print(item)
+
+            # Write the sorted data to a new file
+            write_json_file("storage.json", data)
+            print("Sorted data has been written to 'sorted_storage.json'.")
         else:
             print("Error: 'items' key is missing or not a list.")
     
@@ -118,42 +83,98 @@ def sortByDate():
 
 
 def sortByCategoryAndDate():
-    """
-    Sorts the items in 'storage.json' first by 'category' and then by 'date' (from earliest to latest).
-    """
     try:
         # Check if the file exists
-        if not os.path.exists("storage.json"):
+        if not os.path.exists(os.path.join(SCRIPT_DIR, "storage.json")):
             print("Error: 'storage.json' file does not exist. Make sure it's in the same directory.")
             return
-        
-        # Load the data from 'storage.json' file
-        with open("storage.json", "r") as file:
-            data = file.read()
-            print(f"Raw file content: {data}")  # Debugging line to print the raw file content
-            data = json.loads(data)  # Parse the data from JSON into a Python dictionary
-        
-        # Check if 'items' key exists and is a list
+
+        data = read_json_file("storage.json")
         if "items" in data and isinstance(data["items"], list):
-            # Sort items first by 'category' and then by 'date'
+            # Sort by category first, then by date
             data["items"].sort(key=lambda x: (x["category"], datetime.strptime(x["date"], "%m/%d/%Y")))
-            
-            # Print the sorted items by category and date
-            print("Sorted items by category and date:")
-            for item in data["items"]:
-                print(item)
+
+            # Write the sorted data to a new file
+            write_json_file("storage.json", data)
+            print("Sorted data has been written to 'sorted_storage.json'.")
         else:
             print("Error: 'items' key is missing or not a list.")
     
     except json.JSONDecodeError as e:
         print(f"Error: Invalid JSON format. Details: {e}")
-    
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def getInfo(id: int):
+    try:
+        # Check if the file exists
+        if not os.path.exists(os.path.join(SCRIPT_DIR, "storage.json")):
+            print("Error: 'storage.json' file does not exist. Make sure it's in the same directory.")
+            return
+
+        # Read the JSON data
+        data = read_json_file("storage.json")
+        # print("JSON data loaded:", data)  # Debug: Print loaded data
+        items = data.get("items", [])
+        # print("Items in JSON:", items)  # Debug: Print items list
+        item_list = []
+
+        # Find the item with the specified ID
+        for item in items:
+            # print("Checking item:", item)  # Debug: Print each item being checked
+            if item["id"] == id:
+                # print("Item found:", item)  # Debug: Print the found item
+                item_list.append(item)
+                print(item_list)
+                return item_list # Return the matching item's details
+
+        # If the item is not found, return None
+        print(f"No item found with ID: {id}")
+        return None
+
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON format. Details: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
 
-# This is the entry point of the script
+
+def removeCategory(cat: str):
+    """
+    Remove a specific category from all items in the JSON file.
+    For all items with the specified category, change their category to 'None'.
+    """
+    try:
+        # Check if the file exists
+        if not os.path.exists(os.path.join(SCRIPT_DIR, "storage.json")):
+            print("Error: 'storage.json' file does not exist. Make sure it's in the same directory.")
+            return
+
+        # Read the JSON data
+        storage = read_json_file("storage.json")
+        items = storage.get("items", [])
+
+        # Update the category to 'None' for all matching items
+        updated = False
+        for item in items:
+            if "category" in item and item["category"] == cat:
+                item["category"] = 'None'
+                updated = True
+
+        if updated:
+            # Write the updated data back to the JSON file
+            write_json_file("storage.json", storage)
+            print(f"All items with category '{cat}' have been updated to 'None'.")
+        else:
+            print(f"No items found with category '{cat}'.")
+
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON format. Details: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+
+
 if __name__ == "__main__":
-    # Call the functions to sort items by date and by category and date
-    sortByDate()
-    # sortByCategoryAndDate()
+    # removeCategory("Calculus")
+    pass
