@@ -6,7 +6,7 @@
 import datetime
 from PySide6.QtGui import QKeyEvent, QColor, QFont, QIcon
 from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy, QInputDialog, QStyle, QStyleFactory
-from PySide6.QtCore import Qt, QDate
+from PySide6.QtCore import Qt, QDate, QTimer
 import os, json
 import backend
 
@@ -23,6 +23,7 @@ class ConfirmDelete(QDialog):
         super().__init__()
 
         self.setWindowTitle("Wait!!!")
+        backend.checkForFile()
 
         QBtn = (
             QDialogButtonBox.Yes | QDialogButtonBox.Cancel
@@ -152,7 +153,9 @@ class MyWindow(QMainWindow):
         sidebarLayout.addWidget(self.removeCat)
 
         
-
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.timerCycle)
+        self.timer.start(60000)
 
         mainWidget = QWidget()
         mainWidget.setLayout(mainLayout)
@@ -193,6 +196,12 @@ class MyWindow(QMainWindow):
     }
 """)
 
+    def timerCycle(self):
+        self.sort()
+        self.clearList()
+        self.refreshItems()
+        print('cycle')
+
     def addItem(self):  # Correctly adds an item even to the JSON.
                         # PLEASE NOTE the Date adder will change to be a date input not text,
                         # and the dropdown for the categories is also being added still.
@@ -216,13 +225,7 @@ class MyWindow(QMainWindow):
     def setAddCat(self, text):
         self.curCat = text
 
-    def removeItem(self): # NOT CORRECTLY IMPLEMENTED WITH THE JSON EDITOR, CHANGES ARE NOT PERSISTANT
-        # dlg = ConfirmDelete()
-        # if dlg.exec():
-        #     for item in self.list.selectedItems():
-        #         self.list.takeItem(self.list.row(item))
-        # else:
-        #     print('idk')
+    def removeItem(self): 
 
         query = QMessageBox.question(self, "Wait!!!", 'Are you sure you want to delete the selected items?')
         if query == QMessageBox.Yes:
@@ -236,7 +239,6 @@ class MyWindow(QMainWindow):
 
 
     def editItem(self, item):
-        # print(item.id)
 
         input = QDialog()
         input.setWindowTitle('Edit Assignent')
@@ -290,10 +292,10 @@ class MyWindow(QMainWindow):
         inputLayout.addWidget(saveDiscardBox)
 
 
-        if input.exec():
-            print('REMOVE')
-        else:
-            print('none')
+        # if input.exec():
+        #     print('REMOVE')
+        # else:
+        #     print('none')
         # for self.list.selectedItems():
 
     def clearList(self):
@@ -316,7 +318,6 @@ class MyWindow(QMainWindow):
                 # Start Color
                 today = datetime.datetime.now()
                 curAssignmentDate = datetime.datetime.strptime(item["date"], "%m/%d/%Y")
-                print(today - curAssignmentDate)
                 if curAssignmentDate - today < datetime.timedelta(days=2):
                     newitem.setBackground(QColor(242, 71, 38))
                 elif curAssignmentDate - today < datetime.timedelta(days=7):
@@ -356,7 +357,6 @@ class MyWindow(QMainWindow):
         self.sort()
         self.clearList()
         self.refreshItems()
-        # print('Toggle')
 
     def addNwCat(self):
         """
@@ -392,7 +392,6 @@ class MyWindow(QMainWindow):
             self.sort()
             self.clearList()
             self.refreshItems()
-            # print('Removed')
 
     def sort(self):
         if self.CatSort:

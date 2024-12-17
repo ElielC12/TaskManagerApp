@@ -72,7 +72,7 @@ def sortByDate():
 
             # Write the sorted data to a new file
             write_json_file("storage.json", data)
-            print("Sorted data has been written to 'sorted_storage.json'.")
+            # print("Sorted data has been written to 'sorted_storage.json'.")
         else:
             print("Error: 'items' key is missing or not a list.")
     
@@ -184,6 +184,14 @@ def addCategory(cat: str):
     cats: list = storage["cats"]
     cats.append(cat)
     write_json_file("storage.json", storage)
+
+def checkForFile():
+    if not os.path.exists(os.path.join(SCRIPT_DIR, "storage.json")):
+        storage = json.dump({
+            "items": [],
+            "cats": ["None"]
+        })
+        write_json_file("storage.json", storage)
 
 if __name__ == "__main__":
     # removeCategory("Calculus")
