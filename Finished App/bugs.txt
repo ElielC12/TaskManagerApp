@@ -1,0 +1,7 @@
+Known Bugs:
+
+-Doesn't Work on Mac - date edit is mm/dd/yy instead of mm/dd/yyyy and causes problems
+
+Clarifications If Concerned:
+
+-List is Sorted via Unicode so AA before aa, and NN > aa. If sorting doesnt seem to be working it may just be the casing of the Category
