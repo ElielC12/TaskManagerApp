@@ -1,0 +1,34 @@
+{
+    "items": [
+        {
+            "name": "adqwd",
+            "date": "1/1/2000",
+            "category": "AAA",
+            "id": 8
+        },
+        {
+            "name": "qdqwd",
+            "date": "1/1/2000",
+            "category": "None",
+            "id": 6
+        },
+        {
+            "name": "Blue",
+            "date": "12/24/2024",
+            "category": "None",
+            "id": 9
+        },
+        {
+            "name": "look at that!!",
+            "date": "12/24/2024",
+            "category": "None",
+            "id": 3
+        }
+    ],
+    "cats": [
+        "None",
+        "even this",
+        "aaa",
+        "AAA"
+    ]
+}

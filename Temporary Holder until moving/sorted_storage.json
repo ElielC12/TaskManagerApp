@@ -1,0 +1,51 @@
+{
+    "items": [
+        {
+            "name": "qdqwd",
+            "date": "1/1/2000",
+            "category": "None",
+            "id": 6
+        },
+        {
+            "name": "qwqdwqd",
+            "date": "1/1/2000",
+            "category": "aaa",
+            "id": 7
+        },
+        {
+            "name": "wow",
+            "date": "12/12/2024",
+            "category": "None",
+            "id": 1
+        },
+        {
+            "name": "new item",
+            "date": "12/12/2024",
+            "category": "even this",
+            "id": 4
+        },
+        {
+            "name": "it worked",
+            "date": "12/24/2024",
+            "category": "None",
+            "id": 2
+        },
+        {
+            "name": "look at that!!",
+            "date": "12/24/2024",
+            "category": "None",
+            "id": 3
+        },
+        {
+            "name": "wefwef",
+            "date": "12/25/2024",
+            "category": "even this",
+            "id": 5
+        }
+    ],
+    "cats": [
+        "None",
+        "even this",
+        "aaa"
+    ]
+}

@@ -1,5 +1,4 @@
-# Logan Gardner
-# Shoping Cart App
+# Logan Gardner and Eliel
 # Started 11/12 Added Some features
 # Finsihed 11/13 Finshied Functionality
 
@@ -23,7 +22,6 @@ class ConfirmDelete(QDialog):
         super().__init__()
 
         self.setWindowTitle("Wait!!!")
-        backend.checkForFile()
 
         QBtn = (
             QDialogButtonBox.Yes | QDialogButtonBox.Cancel
@@ -41,10 +39,12 @@ class ConfirmDelete(QDialog):
 
 class MyWindow(QMainWindow):
     def __init__(self):
-            
         super().__init__()
+            
+        backend.checkForFile()
+
         self.setWindowTitle("Trackit")
-        self.setWindowIcon(QIcon('pencil-icon.png'))
+        self.setWindowIcon(QIcon(f'{os.path.dirname(os.path.abspath(__file__))}\pencil-icon.png'))
         self.resize(800, 500)
 
         self.CatSort = False
@@ -65,7 +65,7 @@ class MyWindow(QMainWindow):
         self.curDate = self.AddDate.text()
         self.AddCat = QComboBox() # Category Input
         self.AddCat.setMinimumWidth(160)
-        with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage: # Adds Categorys from JSON
             storage = json.load(storage)
             cats = storage['cats']
             for cat in cats:
@@ -239,7 +239,7 @@ class MyWindow(QMainWindow):
 
 
     def editItem(self, item):
-
+        print('AAAAAAAAAAAAAAAAAAAAA')
         input = QDialog()
         input.setWindowTitle('Edit Assignent')
         input.setWindowIcon(QIcon('pencil-icon.png'))
@@ -267,7 +267,7 @@ class MyWindow(QMainWindow):
         reDate.setDate(QDate(y, m, d))
         reCat.setCurrentText(cat)
 
-        with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage: # Adds Categorys from JSON
             storage = json.load(storage)
             cats = storage['cats']
             for cat in cats:
@@ -291,7 +291,7 @@ class MyWindow(QMainWindow):
         saveDiscardBox.rejected.connect(reject)
         inputLayout.addWidget(saveDiscardBox)
 
-
+        input.exec()
         # if input.exec():
         #     print('REMOVE')
         # else:
@@ -307,7 +307,7 @@ class MyWindow(QMainWindow):
     def refreshItems(self):
         """ Adds Items from JSON File
         """
-        with open(f'storage.json', 'r') as storage:
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage:
             storage = json.load(storage)
             items = storage["items"]
             for item in items:
@@ -342,7 +342,7 @@ class MyWindow(QMainWindow):
             self.addItem()
 
     def closeEvent(self, event): #Old May not be needed. Runs when program closes. May be useful
-        with open(f'{os.path.abspath(__file__)[:-6]}storage.txt', 'w') as storage:    
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}storage.txt', 'w') as storage:    
             for count in range(self.list.count()):
                 storage.write(self.list.item(count).text() + '\n')
                 os.path.abspath(__file__)
@@ -364,7 +364,7 @@ class MyWindow(QMainWindow):
         """
         backend.addCategory(self.newCatName.text())
         self.newCatName.setText('')
-        with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+        with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage: # Adds Categorys from JSON
                 storage = json.load(storage)
                 cats = storage['cats']
                 for item in range(len(cats) + 1):
@@ -381,7 +381,7 @@ class MyWindow(QMainWindow):
         """
         if self.AddCat.currentText() != 'None':
             backend.removeCategory(self.AddCat.currentText())
-            with open(f'storage.json', 'r') as storage: # Adds Categorys from JSON
+            with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage: # Adds Categorys from JSON
                 storage = json.load(storage)
                 cats = storage['cats']
                 for item in range(len(cats) + 1):
