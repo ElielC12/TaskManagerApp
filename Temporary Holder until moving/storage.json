@@ -1,0 +1,59 @@
+{
+    "items": [
+        {
+            "name": "SELECT *Y^&RRW",
+            "date": "1/1/2000",
+            "category": "None",
+            "id": 6
+        },
+        {
+            "name": "this new entry",
+            "date": "1/1/2000",
+            "category": "None",
+            "id": 7
+        },
+        {
+            "name": "egr",
+            "date": "12/14/2000",
+            "category": "None",
+            "id": 3
+        },
+        {
+            "name": "new",
+            "date": "12/13/2024",
+            "category": "None",
+            "id": 2
+        },
+        {
+            "name": "wby",
+            "date": "12/19/2024",
+            "category": "None",
+            "id": 4
+        },
+        {
+            "name": "wow",
+            "date": "12/20/2024",
+            "category": "Math",
+            "id": 8
+        },
+        {
+            "name": "new",
+            "date": "12/25/2024",
+            "category": "This Cat",
+            "id": 9
+        },
+        {
+            "name": "CPTR-123",
+            "date": "1/10/2028",
+            "category": "None",
+            "id": 5
+        }
+    ],
+    "cats": [
+        "None",
+        "Math",
+        "This Cat",
+        "Principle o",
+        "another one"
+    ]
+}
