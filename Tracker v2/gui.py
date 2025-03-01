@@ -3,17 +3,18 @@
 # Finished 12/16/24
 
 import datetime
-from typing import Sequence
 from PySide6.QtGui import QKeyEvent, QColor, QFont, QIcon
-from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy, QInputDialog, QStyle, QStyleFactory, QTableWidget, QTableWidgetItem, QTableView, QTreeWidget, QTreeWidgetItem, QDateTimeEdit
-from PySide6.QtCore import Qt, QDate, QTimer, QDateTime
+from PySide6.QtWidgets import QMainWindow, QApplication, QVBoxLayout, QLabel, QWidget, QListWidget, QListWidgetItem, QHBoxLayout, QGridLayout, QLineEdit, QPushButton, QAbstractItemView, QDialog, QDialogButtonBox, QMessageBox, QDateEdit, QComboBox, QSpacerItem, QSizePolicy, QInputDialog, QStyle, QStyleFactory
+from PySide6.QtCore import Qt, QDate, QTimer
 import os, json
 import backend
 
-class TreeItemWithId(QTreeWidgetItem):
-    def __init__(self, Tree: QTreeWidget, id: int, cols: Sequence[str]):
-        super().__init__(Tree, cols)
+class ListItemWithId(QListWidgetItem):
+    def __init__(self, id: int, label: str):
+        super().__init__()
         self.id = id
+        self.label = label
+        self.setText(label)
 
 
 class ConfirmDelete(QDialog):
@@ -59,7 +60,7 @@ class MyWindow(QMainWindow):
         self.AddName.setMinimumWidth(100)
         self.AddName.setPlaceholderText('Name')
         self.AddName.textChanged.connect(self.setAddName)
-        self.AddDate = QDateTimeEdit() # Date Input 
+        self.AddDate = QDateEdit() # Date Input 
         self.AddDate.dateChanged.connect(self.setAddDate)
         self.curDate = self.AddDate.text()
         self.AddCat = QComboBox() # Category Input
@@ -86,29 +87,20 @@ class MyWindow(QMainWindow):
         pageLayout.addWidget(self.addEntriesWidget)
 
         #Add list section
-        # self.list = QListWidget()
-        # self.list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        # self.sort()
-        # self.refreshItems()
-
-        # self.list.setStyleSheet("""
-        #     QListWidget::item {
-        #         font-size: 20px;
-        #         color: black;
-        #         font-family: Courier;
-        #     }
-        # """)
-        # pageLayout.addWidget(self.list)
-        self.tree = QTreeWidget()
-        self.tree.setHeaderLabels(["Category", "Name", "Due Date", 'Time Till Due'])
-        self.tree.itemDoubleClicked.connect(self.editItem)
-        self.tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        # for i in range(10):
-        #     item = QTreeWidgetItem(self.tree, ['1','1','1','1'])
-        pageLayout.addWidget(self.tree)
-
+        self.list = QListWidget()
+        self.list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.sort()
         self.refreshItems()
+
+        self.list.itemDoubleClicked.connect(self.editItem)
+        self.list.setStyleSheet("""
+            QListWidget::item {
+                font-size: 20px;
+                color: black;
+                font-family: Courier;
+            }
+        """)
+        pageLayout.addWidget(self.list)
         
         #Add Bottom Button section
         self.DeleteButton = QPushButton('-')
@@ -163,15 +155,15 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(mainWidget)
 
         self.setStyleSheet("""
-    QLineEdit, QDateTimeEdit, QComboBox {
+    QLineEdit, QDateEdit, QComboBox {
         font-size: 15pt;
         background-color: white;
         padding: 5px;
         color: black;
     }
                            
-    QDateTimeEdit {
-        width: 200px;                    
+    QDateEdit {
+        width: 130px;                    
     }
 
     QMainWindow {
@@ -242,7 +234,7 @@ class MyWindow(QMainWindow):
 
         query = QMessageBox.question(self, "Wait!!!", 'Are you sure you want to delete the selected items?')
         if query == QMessageBox.Yes:
-            for item in self.tree.selectedItems():
+            for item in self.list.selectedItems():
                 backend.removeFromJSON(item.id)
             self.sort()
             self.clearList()
@@ -265,19 +257,19 @@ class MyWindow(QMainWindow):
         rename = QLineEdit()
         rename.setMaxLength(14)
         inputLayout.addWidget(rename)
-        reDate = QDateTimeEdit()
+        reDate = QDateEdit()
         inputLayout.addWidget(reDate)
         reCat = QComboBox() # Category Input
 
         itemData = backend.getInfo(item.id)[0]
         name = itemData['name']
-        # date = itemData['date'].split('/')
-        # y = int(date[2])
-        # m = int(date[0])
-        # d = int(date[1])
+        date = itemData['date'].split('/')
+        y = int(date[2])
+        m = int(date[0])
+        d = int(date[1])
         cat = itemData['category']
         rename.setText(name)
-        reDate.setDateTime(QDateTime(datetime.datetime.strptime(itemData["date"], "%m/%d/%Y %I:%M %p")))
+        reDate.setDate(QDate(y, m, d))
         reCat.setCurrentText(cat)
 
         with open(f'{os.path.dirname(os.path.abspath(__file__))}\storage.json', 'r') as storage: # Adds Categorys from JSON
@@ -309,9 +301,8 @@ class MyWindow(QMainWindow):
     def clearList(self):
         """Clears the Gui's List of List items. DOES NOT remove the items from JSON
         """
-        # for item in range(self.tree):
-        #     self.list.takeItem(0)
-        self.tree.clear()
+        for item in range(self.list.count()):
+            self.list.takeItem(0)
         
     def refreshItems(self):
         """ Adds Items from JSON File
@@ -320,24 +311,25 @@ class MyWindow(QMainWindow):
             storage = json.load(storage)
             items = storage["items"]
             for item in items:
-                newitem = TreeItemWithId(self.tree, item["id"], [f'{item["category"]}', f'{item["name"]}', f'{item["date"]}'])
-                # newitem = TreeItemWithId(item["id"], f"{item["category"]:<12}" + f"{item["name"]:<15}" + f'{item["date"]:<8}' )
+                newitem = ListItemWithId(item["id"], f"{item["category"]:<12}" + f"{item["name"]:<15}" + f'{item["date"]:<8}' )
                 backend.sortByDate()
+                
                 # Start Color
                 today = datetime.datetime.now()
-                curAssignmentDate = datetime.datetime.strptime(item["date"], "%m/%d/%Y %I:%M %p")
+                curAssignmentDate = datetime.datetime.strptime(item["date"], "%m/%d/%Y")
                 if curAssignmentDate - today < datetime.timedelta(days=2):
-                    newitem.setBackground(3, QColor(242, 71, 38))
+                    newitem.setBackground(QColor(242, 71, 38))
                 elif curAssignmentDate - today < datetime.timedelta(days=7):
-                    newitem.setBackground(3, QColor(250, 199, 16))
+                    newitem.setBackground(QColor(250, 199, 16))
                 elif curAssignmentDate - today > datetime.timedelta(days=7):
-                    newitem.setBackground(3, QColor(11, 167, 137))
+                    newitem.setBackground(QColor(11, 167, 137))
                 else:
-                    newitem.setBackground(3, QColor(0, 0 ,255))
-                # font = QFont()
-                # font.setPointSize(13)
-                # font.setFamily('Courier New')
-                # newitem.setFont(font)
+                    newitem.setBackground(QColor(0, 0 ,255))
+                font = QFont()
+                font.setPointSize(13)
+                font.setFamily('Courier New')
+                newitem.setFont(font)
+                self.list.addItem(newitem)
 
 
     def keyPressEvent(self, event: QKeyEvent) -> None: #For PySide interacton with keys to action

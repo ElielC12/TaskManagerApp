@@ -1,0 +1,6 @@
+1. Extract Zip
+2. Put Files wherever you want(Even just leave them in the unzipped folder) - (Make sure gui.py, backend.py, pencil-icon.png, and storage.json are in the same folder. At a MINIMUM keep gui.py and backend.py in the same folder, they should auto create a storage.json)
+3. Run the app!!!
+
+Dependenceys:
+-Pyside6 (Thats it!!!)
