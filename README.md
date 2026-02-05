@@ -3,6 +3,7 @@ Overview
 The Task Manager App is a productivity application designed to help students organize and manage their school assignments efficiently. It features intuitive task categorization, color-coded priorities, and scheduling capabilities, empowering users to stay on top of deadlines and optimize their productivity.
 ## Showcase
 <img src="assets/gifs/app_demo.gif" alt="App Demo" width="600">
+
 ## Features
 ### Core Features
 **Add, Edit, and Delete Tasks:** Easily manage tasks with fields like name, category, priority, and due date/time.
